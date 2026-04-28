@@ -1,0 +1,37 @@
+package handlers
+
+import (
+	"bank/internal/customerror"
+	"bank/internal/models"
+
+	"github.com/gin-gonic/gin"
+)
+
+type IService interface {
+	CreateAccount(req models.CreateAccountRequest) customerror.Error
+	CloseAccount(email string) customerror.Error
+	GetAccount(email string) (models.BankAccount, customerror.Error)
+
+	AmountOperation(operation string, amount float64, account models.BankAccount) customerror.Error
+	Transfer(req models.TransferRequest) customerror.Error
+}
+
+type Handler struct {
+	service IService
+}
+
+func New(service IService) *Handler {
+	return &Handler{
+		service: service,
+	}
+}
+
+func Init(r *gin.Engine, h *Handler) {
+	r.POST("/account/create", h.CreateAccount)
+	r.POST("/account/close/:email", h.CloseAccount)
+
+	r.GET("/balance/:email", h.GetBalance)
+	r.POST("/amount/:email", h.AmountOperation)
+
+	r.POST("/transfer", h.Transfer)
+}

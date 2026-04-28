@@ -1,18 +1,35 @@
+# Binaries for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
 *.dylib
 
+# Test binary, built with `go test -c`
 *.test
 
+# Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
+# Dependency directories (uncomment to include)
+# vendor/
+
+# Project-local vendored dependencies
 vendor/
+
+# Go module cache (Go 1.11+)
+# This is usually located in $GOPATH/pkg/mod, but can be project-local
+# if GOFLAGS=-mod=vendor is used.
+go.mod
 go.sum
 
+# IDE-specific files (optional, add as needed)
+# Example for VS Code
 .vscode/
-
+# Example for IntelliJ/GoLand
 .idea/
+
+# OS/editor temporary files
 .*.swp
 .DS_Store
+

@@ -1,8 +1,10 @@
 package main
 
 import (
-	"bank/handlears"
+	"bank/internal/handlers"
+	"bank/internal/service"
 	"bank/internal/storage"
+	"log"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -11,32 +13,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @title Bank API
-// jknkjnkj
 func main() {
-	store := storage.New()
-
-	err := store.LoadAccounts()
-	if err != nil {
-		slog.Error("failed to load accounts from file", "error", err)
-		return
-	}
-
 	r := gin.Default()
-	h := handlears.New(store)
-	handlears.Init(r, h)
 
-	go r.Run(":8080")
+	store := storage.New()
+	svc := service.New(store)
+	h := handlers.New(svc)
 
-	Shutdown(store)
+	handlers.Init(r, h)
+
+	go func() {
+		err := r.Run(":8080")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
+
+	Shutdown()
 }
 
-func Shutdown(store *storage.Storage) {
+func Shutdown() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	slog.Info("shutting down...")
-	store.SaveAccounts()
 	slog.Info("shut down successfully")
 }
