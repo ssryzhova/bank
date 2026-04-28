@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>SRBank</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #0b1220;
+    color: white;
+}
+
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #111827;
+    position: fixed;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    color: #028a18;
+}
+
+.sidebar button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px;
+    background: #1f2937;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.sidebar button:hover {
+    background: #374151;
+}
+
+.main {
+    margin-left: 240px;
+    padding: 20px;
+}
+
+.card {
+    background: #111827;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+    border-radius: 6px;
+    border: none;
+}
+
+button.action {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    background: #028a18;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button.action:hover {
+    background: #028a18;
+}
+
+pre {
+    background: black;
+    padding: 10px;
+    border-radius: 8px;
+    height: 120px;
+    overflow: auto;
+}
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+    <h2> SRBank</h2>
+    <button onclick="show('create')">Create Account</button>
+    <button onclick="show('balance')">Balance</button>
+    <button onclick="show('transfer')">Transfer</button>
+</div>
+
+<div class="main">
+
+
+<div id="create" class="card">
+    <h3>Create Account</h3>
+    <input id="name" placeholder="Name">
+    <input id="email" placeholder="Email">
+    <input id="age" placeholder="Age">
+    <button class="action" onclick="createAccount()">Create</button>
+</div>
+
+
+<div id="balance" class="card" style="display:none;">
+    <h3>Check Balance</h3>
+    <input id="email2" placeholder="Email">
+    <button class="action" onclick="getBalance()">Get Balance</button>
+</div>
+
+
+<div id="transfer" class="card" style="display:none;">
+    <h3>Transfer Money</h3>
+    <input id="from" placeholder="From email">
+    <input id="to" placeholder="To email">
+    <input id="amount" placeholder="Amount">
+    <button class="action" onclick="transfer()">Send</button>
+</div>
+
+
+
+<h3>Output</h3>
+<pre id="out"></pre>
+
+</div>
+
+<script>
+
+function show(id){
+    document.querySelectorAll('.card').forEach(c => c.style.display='none');
+    document.getElementById(id).style.display='block';
+}
+
+// CREATE
+async function createAccount(){
+    const res = await fetch("/account/create", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            name: document.getElementById("name").value,
+            email: document.getElementById("email").value,
+            age: Number(document.getElementById("age").value),
+            initial_balance: 1000
+        })
+    });
+
+    document.getElementById("out").innerText = await res.text();
+}
+
+// BALANCE
+async function getBalance(){
+    const email = document.getElementById("email2").value;
+
+    const res = await fetch("/balance/" + email);
+
+    document.getElementById("out").innerText = await res.text();
+}
+
+// TRANSFER
+async function transfer(){
+    const res = await fetch("/transfer", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            email_from: document.getElementById("from").value,
+            email_to: document.getElementById("to").value,
+            amount: Number(document.getElementById("amount").value)
+        })
+    });
+
+    document.getElementById("out").innerText = await res.text();
+}
+
+// HEAP SORT
+async function heap(){
+    const res = await fetch("/process/heapsort", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify([5,1,9,2,7])
+    });
+
+    document.getElementById("out").innerText = await res.text();
+}
+
+// KRUSKAL
+async function kruskal(){
+    const res = await fetch("/process/kruskal", {
+        method:"POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            vertices: 3,
+            edges: [
+                {from:0,to:1,weight:1},
+                {from:1,to:2,weight:2}
+            ]
+        })
+    });
+
+    document.getElementById("out").innerText = await res.text();
+}
+
+</script>
+
+</body>
+</html>

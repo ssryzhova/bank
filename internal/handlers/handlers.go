@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bank/internal/algorithms"
 	"bank/internal/customerror"
 	"bank/internal/models"
 
@@ -14,6 +15,9 @@ type IService interface {
 
 	AmountOperation(operation string, amount float64, account models.BankAccount) customerror.Error
 	Transfer(req models.TransferRequest) customerror.Error
+	SortNumbers(nums []int) []int
+	Search(text, pattern string) []int
+	GetMST(vertices int, edges []algorithms.Edge) []algorithms.Edge
 }
 
 type Handler struct {
@@ -34,4 +38,8 @@ func Init(r *gin.Engine, h *Handler) {
 	r.POST("/amount/:email", h.AmountOperation)
 
 	r.POST("/transfer", h.Transfer)
+
+	r.POST("/algorithms/heapsort", h.HeapSort)
+	r.GET("/algorithms/search", h.Search)
+	r.POST("/algorithms/kruskal", h.Kruskal)
 }

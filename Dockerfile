@@ -18,6 +18,8 @@ WORKDIR /app
 
 COPY --from=builder /app/bank .
 
+COPY --from=builder /app/web ./web
+
 EXPOSE 8080
 
 CMD ["./bank"]

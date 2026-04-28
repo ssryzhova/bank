@@ -5,10 +5,6 @@ import (
 	"bank/internal/service"
 	"bank/internal/storage"
 	"log"
-	"log/slog"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,20 +18,15 @@ func main() {
 
 	handlers.Init(r, h)
 
-	go func() {
-		err := r.Run(":8080")
-		if err != nil {
-			log.Fatal(err)
-		}
-	}()
+	// UI
+	r.Static("/web", "./web")
+	r.GET("/", func(c *gin.Context) {
+		c.File("./web/index.html")
+	})
 
-	Shutdown()
-}
+	log.Println("SRBank started on :8080")
 
-func Shutdown() {
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-
-	slog.Info("shut down successfully")
+	if err := r.Run(":8080"); err != nil {
+		log.Fatal(err)
+	}
 }

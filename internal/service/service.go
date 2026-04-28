@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bank/internal/algorithms"
 	"bank/internal/customerror"
 	"bank/internal/models"
 	"fmt"
@@ -162,4 +163,21 @@ func (s *Service) Transfer(req models.TransferRequest) customerror.Error {
 	}
 
 	return nil
+}
+func (s *Service) SortNumbers(nums []int) []int {
+	algorithms.HeapSort(nums)
+	return nums
+}
+
+func (s *Service) Search(text, pattern string) []int {
+	return algorithms.RabinKarp(text, pattern)
+}
+
+func (s *Service) GetMST(vertices int, edges []algorithms.Edge) []algorithms.Edge {
+	g := algorithms.Graph{
+		Vertices: vertices,
+		Edges:    edges,
+	}
+	algo := algorithms.Kruskal(g)
+	return algo
 }
